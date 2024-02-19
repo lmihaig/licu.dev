@@ -1,0 +1,27 @@
+version: "3"
+services:
+  watchtower:
+    image: containrrr/watchtower
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/.docker/config.json:/config.json
+    command: --interval 60 --cleanup
+
+  caddy:
+    image: iarekylew00t/caddy-cloudflare:latest
+    environment:
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN}
+    restart: unless-stopped
+    ports: 
+      - 80:80
+      - 443:443
+    volumes:
+      - ./data/caddy/Caddyfile:/etc/caddy/Caddyfile
+      # - ./data/caddy/caddy_data:/data
+      # - ./data/caddy/caddy_config:/config
+      - ./data/personal-site/var/www:/var/www/licu.dev:ro
+
+  personal-site:
+    image: ghcr.io/lmihaig/personal-site:latest
+    volumes:
+      - ./data/personal-site/var/www:/var/www/licu.dev

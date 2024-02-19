@@ -1,0 +1,43 @@
+{
+    email licu.mihai21@gmail.com
+    acme_dns  cloudflare {env.CLOUDFLARE_API_TOKEN}
+}
+
+(default) {
+  header X-Clacks-Overhead "GNU Terry Pratchett"
+  encode zstd gzip
+}
+
+
+www.licu.dev {
+    redir https://licu.dev{uri} permanent
+}
+
+*.licu.dev, licu.dev {
+    import default
+
+    root * /var/www/licu.dev/public
+
+    handle_path /blog* {
+        redir * https://blog.licu.dev{uri} permanent
+    }
+
+    handle_path /resume* {
+        redir * https://resume.licu.dev{uri} permanent
+    }
+
+    file_server
+}
+
+
+blog.licu.dev {
+    root * /var/www/licu.dev/public/blog
+    
+    file_server
+}
+
+resume.licu.dev {
+    root * /var/www/licu.dev/public/resume
+    
+    file_server
+}
