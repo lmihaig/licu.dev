@@ -12,7 +12,7 @@ services:
     environment:
       CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN}
     restart: unless-stopped
-    ports: 
+    ports:
       - 80:80
       - 443:443
     volumes:
@@ -21,7 +21,19 @@ services:
       # - ./data/caddy/caddy_config:/config
       - ./data/personal-site/var/www:/var/www/licu.dev:ro
 
+  mongo:
+    image: mongo:latest
+    restart: unless-stopped
+    volumes:
+      - ./data/mongo/db:/data/db
+
   personal-site:
     image: ghcr.io/lmihaig/personal-site:latest
     volumes:
       - ./data/personal-site/var/www:/var/www/licu.dev
+
+  spirit-of-anton:
+    image: ghcr.io/lmihaig/spirit-of-anton:latest
+    environment:
+      - DISCORD_TOKEN=${DISCORD_TOKEN}
+      - DB_URI=${DB_URI}
